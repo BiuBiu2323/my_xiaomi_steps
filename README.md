@@ -1,2 +1,129 @@
 # xiaomisports
 xiaomiyundong
+
+# 小米运动步数修改脚本 (Xiaomi MiFit Step Modifier)
+
+[![License](https://img.shields.io/badge/License-MIT-blue.svg)](https://opensource.org/licenses/MIT)
+[![Python](https://img.shields.io/badge/Python-3.6%2B-brightgreen.svg)](https://www.python.org/)
+
+一个用于自动修改小米运动（MiFit/Zepp Life）步数的 Python 脚本，支持多账号管理、随机步数设置以及 Telegram 通知功能。通过模拟登录和 API 调用，脚本可以在指定时间段内逐步增加步数，模拟真实步数变化。
+
+**⚠️ 注意：本项目仅供学习和研究使用，修改步数可能违反小米运动的使用条款，造成的任何后果由用户自行承担。**
+
+## 功能特点
+
+- **自动修改步数**：支持设置每日步数目标范围，随机生成步数并上传至小米运动。
+- **逐步增加步数**：模拟真实步数变化，在指定时间段（如 7:00-22:00）内逐步增加步数。
+- **多账号支持**：可同时管理多个小米运动账号，批量修改步数。
+- **Telegram 通知**：通过 Telegram Bot 实时推送运行结果和错误信息。
+- **环境变量配置**：通过环境变量灵活设置账号信息、步数范围等参数。
+- **轻量易用**：基于 Python 开发，依赖最小化，支持本地运行或容器化部署（如青龙面板）。
+
+## 安装步骤
+
+### 1. 克隆仓库
+```bash
+git clone https://github.com/yourusername/xiaomi-mifit-step-modifier.git
+cd xiaomi-mifit-step-modifier
+2. 安装依赖
+确保你已安装 Python 3.6 或以上版本，然后安装必要的依赖库：
+
+<BASH>
+pip install requests
+3. 配置环境变量
+脚本通过环境变量读取配置信息。你可以直接在系统环境变量中设置，或在项目目录下创建一个 .env 文件（需安装 python-dotenv 并在代码中加载），或在运行脚本时临时设置。
+
+环境变量说明
+变量名	描述	示例值	是否必填
+XM_TG_BOT_TOKEN	Telegram Bot Token，用于通知	1234567890:ABCdefGHIjkl	否
+XM_TG_USER_ID	Telegram 用户 ID，接收通知	123456789	否
+MI_USER	小米运动账号，支持多账号以 # 分隔	user1#user2	是
+MI_PASSWD	小米运动密码，支持多账号以 # 分隔	pass1#pass2	是
+STEP_MIN	每日步数最小值	8000	否
+STEP_MAX	每日步数最大值	10000	否
+在 Linux/macOS 中临时设置环境变量
+<BASH>
+export XM_TG_BOT_TOKEN="your_bot_token"
+export XM_TG_USER_ID="your_user_id"
+export MI_USER="your_username"
+export MI_PASSWD="your_password"
+export STEP_MIN="8000"
+export STEP_MAX="10000"
+在 Windows 中临时设置环境变量
+<CMD>
+set XM_TG_BOT_TOKEN=your_bot_token
+set XM_TG_USER_ID=your_user_id
+set MI_USER=your_username
+set MI_PASSWD=your_password
+set STEP_MIN=8000
+set STEP_MAX=10000
+青龙面板用户
+如果使用青龙面板（QL），请在 环境变量 配置页面添加以上变量，名称和值对应填写即可。
+
+4. 运行脚本
+完成配置后，直接运行脚本：
+
+<BASH>
+python xiaomi_step_modifier.py
+使用方法
+单次运行：直接执行脚本，脚本会根据当前时间和步数范围修改步数，并通过 Telegram 发送通知（若配置）。
+
+定时运行：建议使用系统定时任务工具（如 Linux 的 cron 或青龙面板）设置脚本每日运行多次，以模拟步数逐步增加。
+
+示例（Linux cron 每小时运行一次）：
+<BASH>
+0 * * * * cd /path/to/xiaomi-mifit-step-modifier && python xiaomi_step_modifier.py >> /path/to/log.log 2>&1
+查看日志：脚本运行时会输出详细日志，包括登录状态、步数修改结果等，方便排查问题。
+
+代码结构
+<PLAINTEXT>
+xiaomi-mifit-step-modifier/
+│
+├── xiaomi_step_modifier.py  # 主脚本文件，包含所有逻辑
+└── README.md                # 项目说明文件
+核心功能模块
+环境变量读取：从系统环境变量获取配置信息。
+登录小米运动：通过 API 模拟登录，获取 token 和用户 ID。
+步数逐步增加逻辑：根据时间段计算当前应显示的步数，模拟真实步数变化。
+步数修改：调用小米运动 API 上传步数数据。
+Telegram 通知：将运行结果推送至指定 Telegram 用户。
+
+注意事项
+
+合法使用：本脚本仅供学习和研究目的，禁止用于任何商业、欺诈或非法行为。使用本脚本所导致的任何后果由用户自行承担。
+账户安全：请勿将账户信息硬编码到代码中，推荐使用环境变量或 .env 文件存储敏感信息。
+接口限制：小米运动的 API 可能会有请求限制或变动，若脚本失效，请检查 API 接口是否更新。
+日志保护：脚本会记录运行日志，请确保日志文件不会泄露你的账户信息。
+错误排查
+登录失败：检查手机号和密码是否正确，是否触发了小米账户的短信验证码（脚本暂不支持验证码处理）。
+网络问题：确保你的网络环境可以正常访问小米服务器。
+依赖缺失：如果提示缺少模块，请确保已安装 requests 和 python-dotenv。
+
+贡献
+欢迎提交 Issue 或 Pull Request 来改进代码或报告问题。请确保你的贡献符合以下准则：
+
+代码风格遵循 PEP 8。
+提交前进行测试，确保不引入新 bug。
+详细描述你的修改内容和目的。
+许可证
+本项目基于 MIT 许可证 开源，详情请查看 LICENSE 文件。
+
+免责声明
+本项目仅供学习交流使用，不对任何使用后果负责。小米运动的 API 属于小米公司所有，本项目不保证接口的长期可用性，且不与小米公司有任何关联。
+
+## 联系方式
+如果有任何问题或建议，请通过 GitHub Issue 联系我，或者发送邮件至 your_email@example.com。
+
+## 星标本项目 🌟
+欢迎星标本项目以获取最新更新！你的支持是我持续维护和改进项目的动力！
+
+## 贡献
+欢迎提交 Pull Request 或 Issue 来帮助改进此项目。如果你有新的功能想法或发现了 Bug，请随时联系我或提交代码。
+
+## 许可证
+本项目遵循 [MIT 许可证](LICENSE)。你可以自由地使用、修改和分发代码，但请保留原作者信息并声明本项目的许可证。
+
+---
+
+感谢使用小米运动步数修改脚本！希望本工具能为你带来便利。
+
