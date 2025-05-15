@@ -25,12 +25,14 @@ xiaomiyundong
 ```bash
 git clone https://github.com/yourusername/xiaomi-mifit-step-modifier.git
 cd xiaomi-mifit-step-modifier
-2. 安装依赖
+
+### 2. 安装依赖
 确保你已安装 Python 3.6 或以上版本，然后安装必要的依赖库：
 
 <BASH>
 pip install requests
-3. 配置环境变量
+
+### 3. 配置环境变量
 脚本通过环境变量读取配置信息。你可以直接在系统环境变量中设置，或在项目目录下创建一个 .env 文件（需安装 python-dotenv 并在代码中加载），或在运行脚本时临时设置。
 
 环境变量说明
@@ -60,7 +62,7 @@ set STEP_MAX=10000
 青龙面板用户
 如果使用青龙面板（QL），请在 环境变量 配置页面添加以上变量，名称和值对应填写即可。
 
-4. 运行脚本
+### 4. 运行脚本
 完成配置后，直接运行脚本：
 
 <BASH>
