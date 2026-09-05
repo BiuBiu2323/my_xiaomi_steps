@@ -25,7 +25,7 @@ jobs:
         run: |
           python -m pip install --upgrade pip
           # 根据 README 和代码推测，至少需要 requests 库
-          # pip install requests json re
+          pip install requests
           # 如果代码实际依赖其他库，请在此处补充安装，例如：
           # pip install python-dotenv # 如果代码确实使用了 .env 文件
 
