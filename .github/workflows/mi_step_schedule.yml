@@ -13,30 +13,29 @@ jobs:
   run-script:
     runs-on: ubuntu-latest
     steps:
-      # 1. 检出仓库代码到运行环境
       - name: Checkout repository
         uses: actions/checkout@v4
 
-      # 2. 设置 Python 运行环境
       - name: Setup Python
         uses: actions/setup-python@v4
         with:
           python-version: '3.12' # 使用项目要求的 Python 版本
 
-      # 3. 安装依赖 (项目要求 requests 和 python-dotenv)
       - name: Install dependencies
         run: |
           python -m pip install --upgrade pip
-          pip install requests python-dotenv
+          # 根据 README 和代码推测，至少需要 requests 库
+          pip install requests pytz
+          # 如果代码实际依赖其他库，请在此处补充安装，例如：
+          # pip install python-dotenv # 如果代码确实使用了 .env 文件
 
-      # 4. 运行主脚本
-      - name: Run mi_step.py
+      - name: Run mi_step.py # 注意：这里指向实际的主脚本文件名
         env:
-          # 将 GitHub Secrets 映射为环境变量，供脚本读取
+          # 将 GitHub Secrets 映射为环境变量
           MI_USER: ${{ secrets.MI_USER }}
           MI_PASSWD: ${{ secrets.MI_PASSWD }}
           STEP_MIN: ${{ secrets.STEP_MIN }}
           STEP_MAX: ${{ secrets.STEP_MAX }}
           XM_TG_BOT_TOKEN: ${{ secrets.XM_TG_BOT_TOKEN }}
           XM_TG_USER_ID: ${{ secrets.XM_TG_USER_ID }}
-        run: python mi_step.py
+        run: python mi_step.py # 执行实际的主脚本
