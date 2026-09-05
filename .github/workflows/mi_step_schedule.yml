@@ -1,0 +1,42 @@
+name: 修改小米运动步数
+
+on:
+  # 定时触发器 - 使用 UTC 时间
+  schedule:
+    # 例如：每天 UTC 时间 17:00 运行（北京时间 09:00）
+    # 更多示例和说明请参考下文
+    - cron: '0 17 * * *'
+  # 手动触发器 - 允许您在 Actions 页面手动运行工作流进行测试
+  workflow_dispatch:
+
+jobs:
+  run-script:
+    runs-on: ubuntu-latest
+    steps:
+      # 1. 检出仓库代码到运行环境
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      # 2. 设置 Python 运行环境
+      - name: Setup Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.12' # 使用项目要求的 Python 版本
+
+      # 3. 安装依赖 (项目要求 requests 和 python-dotenv)
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install requests python-dotenv
+
+      # 4. 运行主脚本
+      - name: Run mi_step.py
+        env:
+          # 将 GitHub Secrets 映射为环境变量，供脚本读取
+          MI_USER: ${{ secrets.MI_USER }}
+          MI_PASSWD: ${{ secrets.MI_PASSWD }}
+          STEP_MIN: ${{ secrets.STEP_MIN }}
+          STEP_MAX: ${{ secrets.STEP_MAX }}
+          XM_TG_BOT_TOKEN: ${{ secrets.XM_TG_BOT_TOKEN }}
+          XM_TG_USER_ID: ${{ secrets.XM_TG_USER_ID }}
+        run: python mi_step.py
