@@ -1,12 +1,11 @@
 name: 修改小米运动步数
 
 on:
-  # 定时触发器 - 使用 UTC 时间
   schedule:
-    # 例如：每天 UTC 时间 17:00 运行（北京时间 09:00）
-    # 更多示例和说明请参考下文
-    - cron: '0 17 * * *'
-  # 手动触发器 - 允许您在 Actions 页面手动运行工作流进行测试
+    # 注意：cron 使用 UTC 时间，北京时间 = UTC + 8
+    - cron: '0 1 * * *'   # 北京时间每天 09:00
+    - cron: '0 9 * * *'   # 北京时间每天 17:00
+  # 手动触发器 - 允许在 Actions 页面手动运行工作流进行测试
   workflow_dispatch:
 
 jobs:
@@ -19,23 +18,23 @@ jobs:
       - name: Setup Python
         uses: actions/setup-python@v7
         with:
-          python-version: '3.12' # 使用项目要求的 Python 版本
+          python-version: '3.12'
 
       - name: Install dependencies
         run: |
           python -m pip install --upgrade pip
-          # 根据 README 和代码推测，至少需要 requests 库
           pip install requests
-          # 如果代码实际依赖其他库，请在此处补充安装，例如：
-          # pip install python-dotenv # 如果代码确实使用了 .env 文件
 
-      - name: Run my_mi_step.py # 注意：这里指向实际的主脚本文件名
+      - name: Run my_mi_step.py
         env:
-          # 将 GitHub Secrets 映射为环境变量
+          # 将 GitHub Secrets 映射为环境变量（脚本同时支持 MI_PASSWD / MI_PASSWORD）
           MI_USER: ${{ secrets.MI_USER }}
+          MI_PASSWD: ${{ secrets.MI_PASSWD }}
           MI_PASSWORD: ${{ secrets.MI_PASSWD }}
-          MI_MIN_STEPS: ${{ secrets.STEP_MIN }}
-          MI_MAX_STEPS: ${{ secrets.STEP_MAX }}
+          STEP_MIN: ${{ secrets.STEP_MIN }}
+          STEP_MAX: ${{ secrets.STEP_MAX }}
+          # 可选推送通知
+          MI_SENDKEY: ${{ secrets.MI_SENDKEY }}
           XM_TG_BOT_TOKEN: ${{ secrets.XM_TG_BOT_TOKEN }}
           XM_TG_USER_ID: ${{ secrets.XM_TG_USER_ID }}
-        run: python my_mi_step.py # 执行实际的主脚本
+        run: python my_mi_step.py
